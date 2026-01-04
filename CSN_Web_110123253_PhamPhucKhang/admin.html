@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Admin - Du Lịch Thông Minh</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Liên kết CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Tiêu đề -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="admin.html">
+                <i class="bi bi-shield-lock-fill"></i> Quản trị Admin
+            </a>
+            <div class="d-flex align-items-center">
+                <span class="text-white me-3" id="adminInfo">
+                    <i class="bi bi-person-circle"></i> <span id="adminUsername">Admin</span>
+                </span>
+                <a href="index.html" class="btn btn-outline-light btn-sm me-2">
+                    <i class="bi bi-house"></i> Trang chủ
+                </a>
+                <button class="btn btn-outline-danger btn-sm" id="logoutBtn">
+                    <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Nội dung chính -->
+    <div class="container-fluid my-4">
+        <div class="row">
+            
+            <!-- Thanh bên trái - Form thêm/sửa -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-top" style="top: 20px;">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0" id="formTitle">
+                            <i class="bi bi-plus-circle"></i> Thêm địa điểm mới
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="placeForm">
+                            <!-- ID ẩn cho chế độ chỉnh sửa -->
+                            <input type="hidden" id="placeId">
+                            
+                            <!-- Tên địa điểm -->
+                            <div class="mb-3">
+                                <label for="ten" class="form-label fw-bold">
+                                    <i class="bi bi-geo-alt"></i> Tên địa điểm <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control" id="ten" placeholder="VD: Vịnh Hạ Long" required>
+                            </div>
+                            
+                            <!-- Vùng miền -->
+                            <div class="mb-3">
+                                <label for="vung_mien" class="form-label fw-bold">
+                                    <i class="bi bi-map"></i> Vùng miền <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select" id="vung_mien" required>
+                                    <option value="">-- Chọn miền --</option>
+                                    <option value="Miền Bắc">Miền Bắc</option>
+                                    <option value="Miền Trung">Miền Trung</option>
+                                    <option value="Miền Nam">Miền Nam</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Chi phí -->
+                            <div class="mb-3">
+                                <label for="chi_phi" class="form-label fw-bold">
+                                    <i class="bi bi-wallet2"></i> Chi phí (VNĐ) <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" class="form-control" id="chi_phi" placeholder="VD: 3000000" min="0" step="100000" required>
+                                <small class="text-muted">Đơn vị: VNĐ</small>
+                            </div>
+                            
+                            <!-- Thời gian -->
+                            <div class="mb-3">
+                                <label for="thoi_gian" class="form-label fw-bold">
+                                    <i class="bi bi-clock"></i> Thời gian (giờ) <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" class="form-control" id="thoi_gian" placeholder="VD: 48" min="1" required>
+                                <small class="text-muted">Đơn vị: giờ (48h = 2 ngày)</small>
+                            </div>
+                            
+                            <!-- Hình ảnh URL -->
+                            <div class="mb-3">
+                                <label for="hinh_anh" class="form-label fw-bold">
+                                    <i class="bi bi-image"></i> URL Hình ảnh
+                                </label>
+                                <input type="text" class="form-control" id="hinh_anh" placeholder="images/halong.jpg">
+                                <small class="text-muted">Đường dẫn tương đối hoặc URL</small>
+                            </div>
+                            
+                            <hr class="my-3">
+                            
+                            <!-- 9 thuộc tính -->
+                            <h6 class="text-primary mb-3">
+                                <i class="bi bi-sliders"></i> Thuộc tính (1-10)
+                            </h6>
+                            
+                            <div class="row">
+                                <!-- Thiên nhiên -->
+                                <div class="col-6 mb-3">
+                                    <label class="form-label small">🌳 Thiên nhiên</label>
+                                    <input type="number" class="form-control form-control-sm" id="thien_nhien" min="1" max="10" value="5">
+                                </div>
+                                
+                                <!-- Nghỉ dưỡng -->
+                                <div class="col-6 mb-3">
+                                    <label class="form-label small">🌙 Nghỉ dưỡng</label>
+                                    <input type="number" class="form-control form-control-sm" id="nghi_duong" min="1" max="10" value="5">
+                                </div>
+                                
+                                <!-- Văn hóa -->
+                                <div class="col-6 mb-3">
+                                    <label class="form-label small">🏛️ Văn hóa</label>
+                                    <input type="number" class="form-control form-control-sm" id="van_hoa" min="1" max="10" value="5">
+                                </div>
+                                
+                                <!-- Ẩm thực -->
+                                <div class="col-6 mb-3">
+                                    <label class="form-label small">☕ Ẩm thực</label>
+                                    <input type="number" class="form-control form-control-sm" id="am_thuc" min="1" max="10" value="5">
+                                </div>
+                                
+                                <!-- Khám phá -->
+                                <div class="col-6 mb-3">
+                                    <label class="form-label small">🚴 Khám phá</label>
+                                    <input type="number" class="form-control form-control-sm" id="kham_pha" min="1" max="10" value="5">
+                                </div>
+                                
+                                <!-- Gia đình -->
+                                <div class="col-6 mb-3">
+                                    <label class="form-label small">👨‍👩‍👧 Gia đình</label>
+                                    <input type="number" class="form-control form-control-sm" id="gia_dinh" min="1" max="10" value="5">
+                                </div>
+                                
+                                <!-- Cặp đôi -->
+                                <div class="col-6 mb-3">
+                                    <label class="form-label small">❤️ Cặp đôi</label>
+                                    <input type="number" class="form-control form-control-sm" id="cap_doi" min="1" max="10" value="5">
+                                </div>
+                                
+                                <!-- Chụp ảnh -->
+                                <div class="col-6 mb-3">
+                                    <label class="form-label small">📷 Chụp ảnh</label>
+                                    <input type="number" class="form-control form-control-sm" id="chup_anh" min="1" max="10" value="5">
+                                </div>
+                                
+                                <!-- Khách sạn -->
+                                <div class="col-12 mb-3">
+                                    <label class="form-label small">🏨 Khách sạn</label>
+                                    <input type="number" class="form-control form-control-sm" id="khach_san" min="1" max="10" value="5">
+                                </div>
+                            </div>
+                            
+                            <!-- Các nút -->
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary" id="submitBtn">
+                                    <i class="bi bi-plus-circle"></i> Thêm địa điểm
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" id="cancelBtn" style="display: none;">
+                                    <i class="bi bi-x-circle"></i> Hủy
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sự kiện phải - Danh sách địa điểm -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-list-ul"></i> Danh sách địa điểm 
+                            <span class="badge bg-success" id="placeCount">0</span>
+                        </h5>
+                        <button class="btn btn-sm btn-outline-light" id="resetDataBtn">
+                            <i class="bi bi-arrow-clockwise"></i> Reset dữ liệu
+                        </button>
+                    </div>
+                    <div class="card-body p-0">
+                        <!-- Tìm kiếm & Lọc -->
+                        <div class="p-3 bg-light border-bottom">
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" id="searchInput" placeholder="🔍 Tìm kiếm theo tên...">
+                                </div>
+                                <div class="col-md-6">
+                                    <select class="form-select" id="filterRegion">
+                                        <option value="">Tất cả miền</option>
+                                        <option value="Miền Bắc">Miền Bắc</option>
+                                        <option value="Miền Trung">Miền Trung</option>
+                                        <option value="Miền Nam">Miền Nam</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bảng -->
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped mb-0" id="placesTable">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th width="5%">ID</th>
+                                        <th width="25%">Tên địa điểm</th>
+                                        <th width="15%">Miền</th>
+                                        <th width="15%">Chi phí</th>
+                                        <th width="10%">Thời gian</th>
+                                        <th width="15%">Thuộc tính</th>
+                                        <th width="15%">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="placesTableBody">
+                                    <!-- Dữ liệu sẽ được chèn vào đây bằng JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Trạng thái trống -->
+                        <div id="emptyState" class="text-center py-5 d-none">
+                            <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                            <p class="text-muted mt-3">Chưa có địa điểm nào</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Chân trang -->
+    <footer class="bg-light py-3 mt-5">
+        <div class="container text-center text-muted">
+            <small>© Quản trị hệ thống Du Lịch Thông Minh | Phạm Phúc Khang</small>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Liên kết JS Files -->
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin.js"></script>
+    
+    <!-- Kiểm tra quản quyền trị viên khi tải -->
+    <script>
+        // Kiểm tra quyền admin khi load trang
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gọi hàm checkAdmin() từ auth.js
+            if (typeof checkAdmin === 'function') {
+                checkAdmin(); // Tự động redirect nếu chưa đăng nhập
+            }
+            
+            // Hiển thị thông tin admin
+            if (typeof displayAdminInfo === 'function') {
+                const info = displayAdminInfo();
+                if (info) {
+                    document.getElementById('adminUsername').textContent = info.username;
+                    document.getElementById('adminInfo').title = info.message;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

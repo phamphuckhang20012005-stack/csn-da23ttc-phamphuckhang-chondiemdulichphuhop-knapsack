@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm Địa Điểm Du Lịch - Knapsack Algorithm</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Liên kết CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Tiêu đề -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-compass"></i> Du Lịch Thông Minh
+            </a>
+            <div class="ms-auto">
+                <a href="admin-login.html" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-shield-lock"></i> Admin
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Nội dung chính -->
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <!-- Phần tiêu đề -->
+                <div class="text-center mb-4">
+                    <h1 class="display-5 fw-bold text-primary">
+                        <i class="bi bi-geo-alt-fill"></i> Tìm Địa Điểm Du Lịch Phù Hợp
+                    </h1>
+                    <p class="lead text-muted">
+                        Sử dụng thuật toán Knapsack 0/1 để tìm địa điểm tối ưu theo ngân sách của bạn
+                    </p>
+                </div>
+
+                <!-- Thẻ biểu mẫu -->
+                <div class="card shadow-lg border-0">
+                    <div class="card-body p-4">
+                        <form id="userForm">
+                            
+                            <!-- Phần 1: Thông tin cơ bản -->
+                            <h5 class="card-title mb-3 text-primary">
+                                <i class="bi bi-info-circle"></i> Thông tin cơ bản
+                            </h5>
+                            
+                            <div class="row mb-4">
+                                <!-- Ngân sách -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="ngan_sach" class="form-label fw-bold">
+                                        <i class="bi bi-wallet2"></i> Ngân sách tối đa
+                                    </label>
+                                    <input 
+                                        type="range" 
+                                        class="form-range" 
+                                        id="ngan_sach" 
+                                        min="500000" 
+                                        max="20000000" 
+                                        step="500000" 
+                                        value="5000000"
+                                        required
+                                    >
+                                    <div class="text-center mt-2">
+                                        <span class="badge bg-success fs-6" id="budgetDisplay">5.0 triệu VNĐ</span>
+                                    </div>
+                                </div>
+
+                                <!-- Số ngày -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="so_ngay" class="form-label fw-bold">
+                                        <i class="bi bi-calendar3"></i> Số ngày dự kiến
+                                    </label>
+                                    <select class="form-select" id="so_ngay">
+                                        <option value="1">1 ngày</option>
+                                        <option value="2" selected>2-3 ngày</option>
+                                        <option value="3">4-5 ngày</option>
+                                        <option value="4">6-7 ngày</option>
+                                        <option value="5">Trên 7 ngày</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Vùng miền -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-map"></i> Vùng miền (tùy chọn)
+                                </label>
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="vung_mien" id="regionAll" value="all" checked>
+                                    <label class="btn btn-outline-primary" for="regionAll">Tất cả</label>
+                                    
+                                    <input type="radio" class="btn-check" name="vung_mien" id="regionNorth" value="Miền Bắc">
+                                    <label class="btn btn-outline-primary" for="regionNorth">Miền Bắc</label>
+                                    
+                                    <input type="radio" class="btn-check" name="vung_mien" id="regionCentral" value="Miền Trung">
+                                    <label class="btn btn-outline-primary" for="regionCentral">Miền Trung</label>
+                                    
+                                    <input type="radio" class="btn-check" name="vung_mien" id="regionSouth" value="Miền Nam">
+                                    <label class="btn btn-outline-primary" for="regionSouth">Miền Nam</label>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <!-- Phần 2: Nhu cầu du lịch -->
+                            <h5 class="card-title mb-3 text-primary">
+                                <i class="bi bi-sliders"></i> Nhu cầu của bạn
+                            </h5>
+                            <p class="text-muted small mb-3">Điều chỉnh các thanh trượt theo sở thích (1 = Không quan tâm, 10 = Rất quan tâm)</p>
+
+                            <!-- 9 thuộc tính -->
+                            <div class="row">
+                                <!-- Thiên nhiên -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        <i class="bi bi-tree-fill text-success"></i> Thiên nhiên
+                                        <span class="badge bg-secondary" id="thien_nhienValue">5</span>
+                                    </label>
+                                    <input type="range" class="form-range" id="thien_nhien" min="1" max="10" value="5">
+                                </div>
+
+                                <!-- Nghỉ dưỡng -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        <i class="bi bi-moon-stars-fill text-info"></i> Nghỉ dưỡng
+                                        <span class="badge bg-secondary" id="nghi_duongValue">5</span>
+                                    </label>
+                                    <input type="range" class="form-range" id="nghi_duong" min="1" max="10" value="5">
+                                </div>
+
+                                <!-- Văn hóa -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        <i class="bi bi-bank text-warning"></i> Văn hóa/Lịch sử
+                                        <span class="badge bg-secondary" id="van_hoaValue">5</span>
+                                    </label>
+                                    <input type="range" class="form-range" id="van_hoa" min="1" max="10" value="5">
+                                </div>
+
+                                <!-- Ẩm thực -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        <i class="bi bi-cup-hot-fill text-danger"></i> Ẩm thực
+                                        <span class="badge bg-secondary" id="am_thucValue">5</span>
+                                    </label>
+                                    <input type="range" class="form-range" id="am_thuc" min="1" max="10" value="5">
+                                </div>
+
+                                <!-- Khám phá -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        <i class="bi bi-bicycle text-primary"></i> Khám phá/Mạo hiểm
+                                        <span class="badge bg-secondary" id="kham_phaValue">5</span>
+                                    </label>
+                                    <input type="range" class="form-range" id="kham_pha" min="1" max="10" value="5">
+                                </div>
+
+                                <!-- Gia đình -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        <i class="bi bi-people-fill text-success"></i> Gia đình
+                                        <span class="badge bg-secondary" id="gia_dinhValue">5</span>
+                                    </label>
+                                    <input type="range" class="form-range" id="gia_dinh" min="1" max="10" value="5">
+                                </div>
+
+                                <!-- Cặp đôi -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        <i class="bi bi-heart-fill text-danger"></i> Cặp đôi
+                                        <span class="badge bg-secondary" id="cap_doiValue">5</span>
+                                    </label>
+                                    <input type="range" class="form-range" id="cap_doi" min="1" max="10" value="5">
+                                </div>
+
+                                <!-- Chụp ảnh -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        <i class="bi bi-camera-fill text-warning"></i> Chụp ảnh
+                                        <span class="badge bg-secondary" id="chup_anhValue">5</span>
+                                    </label>
+                                    <input type="range" class="form-range" id="chup_anh" min="1" max="10" value="5">
+                                </div>
+
+                                <!-- Khách sạn -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        <i class="bi bi-building text-info"></i> Khách sạn/Resort
+                                        <span class="badge bg-secondary" id="khach_sanValue">5</span>
+                                    </label>
+                                    <input type="range" class="form-range" id="khach_san" min="1" max="10" value="5">
+                                </div>
+                            </div>
+
+                            <!-- Các nút -->
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-between mt-4">
+                                <button type="button" class="btn btn-outline-secondary" id="resetBtn">
+                                    <i class="bi bi-arrow-clockwise"></i> Đặt lại
+                                </button>
+                                <button type="submit" class="btn btn-primary btn-lg px-5">
+                                    <i class="bi bi-search"></i> Tìm địa điểm phù hợp
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Thông tin chân trang -->
+                <div class="text-center mt-4">
+                    <p class="text-muted small">
+                        <i class="bi bi-info-circle"></i> Hệ thống sử dụng thuật toán Knapsack 0/1 để tối ưu hóa lựa chọn địa điểm
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Chân trang -->
+    <footer class="bg-light py-3 mt-5">
+        <div class="container text-center text-muted">
+            <small>© Ứng dụng tìm địa điểm du lịch | Phạm Phúc Khang</small>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Liên kết JS Files -->
+    <script src="js/data.js"></script>
+    <script src="js/knapsack.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

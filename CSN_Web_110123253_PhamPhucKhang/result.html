@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kết quả đề xuất - Du Lịch Thông Minh</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Liên kết CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Tiêu đề -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-compass"></i> Du Lịch Thông Minh
+            </a>
+            <div class="ms-auto">
+                <a href="index.html" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-arrow-left"></i> Tìm kiếm mới
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Nội dung chính -->
+    <div class="container my-5">
+        
+        <!-- Loading... -->
+        <div id="loadingSection" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3 text-muted">Đang tìm địa điểm phù hợp cho bạn...</p>
+        </div>
+
+        <!-- Phần lỗi -->
+        <div id="errorSection" class="d-none">
+            <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Không tìm thấy kết quả</h4>
+                <p id="errorMessage"></p>
+                <hr>
+                <p class="mb-0">
+                    <a href="index.html" class="btn btn-warning">
+                        <i class="bi bi-arrow-left"></i> Quay lại tìm kiếm
+                    </a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Phần kết quả -->
+        <div id="resultSection" class="d-none">
+            
+            <!-- Thẻ tóm tắt -->
+            <div class="card shadow-sm mb-4 border-0">
+                <div class="card-body bg-light">
+                    <h4 class="card-title text-primary mb-3">
+                        <i class="bi bi-info-circle-fill"></i> Thông tin chuyến đi
+                    </h4>
+                    <div class="row">
+                        <div class="col-md-3 mb-2">
+                            <small class="text-muted d-block">Ngân sách</small>
+                            <strong id="summaryBudget" class="text-success fs-5">0 VNĐ</strong>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <small class="text-muted d-block">Tổng chi phí</small>
+                            <strong id="summaryTotalCost" class="text-danger fs-5">0 VNĐ</strong>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <small class="text-muted d-block">Còn lại</small>
+                            <strong id="summaryRemaining" class="text-info fs-5">0 VNĐ</strong>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <small class="text-muted d-block">Tổng thời gian</small>
+                            <strong id="summaryTotalTime" class="text-primary fs-5">0 giờ</strong>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <small class="text-muted d-block">Vùng miền</small>
+                            <span id="summaryRegion" class="badge bg-primary">Tất cả</span>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted d-block">Số địa điểm đề xuất</small>
+                            <span id="summaryPlaceCount" class="badge bg-success fs-6">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tiêu đề danh sách địa điểm -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="text-primary">
+                    <i class="bi bi-geo-alt-fill"></i> Địa điểm được đề xuất
+                </h4>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="sortByScore">
+                        <i class="bi bi-sort-down"></i> Điểm phù hợp
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="sortByCost">
+                        <i class="bi bi-currency-dollar"></i> Chi phí
+                    </button>
+                </div>
+            </div>
+
+            <!-- Hộp đựng thẻ địa điểm -->
+            <div id="placesContainer" class="row">
+                <!-- Các thẻ sẽ được chèn vào đây bằng JavaScript -->
+            </div>
+
+            <!-- Nút hành động -->
+            <div class="text-center mt-4">
+                <a href="index.html" class="btn btn-primary btn-lg">
+                    <i class="bi bi-arrow-left"></i> Tìm kiếm mới
+                </a>
+                <button class="btn btn-outline-secondary btn-lg" onclick="window.print()">
+                    <i class="bi bi-printer"></i> In kết quả
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Chân trang -->
+    <footer class="bg-light py-3 mt-5">
+        <div class="container text-center text-muted">
+            <small>© Ứng dụng tìm địa điểm du lịch | Phạm Phúc Khang</small>
+        </div>
+    </footer>
+
+    <template id="placeCardTemplate">
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm hover-shadow">
+                <!-- Hình ảnh -->
+                <div class="position-relative">
+                    <img src="" class="card-img-top place-image" alt="" style="height: 200px; object-fit: cover;">
+                    <!-- Huy hiệu -->
+                    <div class="position-absolute top-0 end-0 m-2">
+                        <span class="badge bg-success fs-6 place-score">
+                            <i class="bi bi-star-fill"></i> 0.0
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Thân thẻ -->
+                <div class="card-body">
+                    <!-- Tiêu đề -->
+                    <h5 class="card-title text-primary place-name">Tên địa điểm</h5>
+                    
+                    <!-- Danh sách thông tin -->
+                    <ul class="list-unstyled mb-2">
+                        <!-- Miền -->
+                        <li class="mb-2">
+                            <i class="bi bi-map text-primary"></i>
+                            <strong>Miền:</strong>
+                            <span class="place-region badge bg-info">Miền Bắc</span>
+                        </li>
+                        
+                        <!-- Chi phí -->
+                        <li class="mb-2">
+                            <i class="bi bi-wallet2 text-success"></i>
+                            <strong>Chi phí:</strong>
+                            <span class="place-cost text-danger fw-bold">0 VNĐ</span>
+                        </li>
+                        
+                        <!-- Thời gian -->
+                        <li class="mb-2">
+                            <i class="bi bi-clock text-warning"></i>
+                            <strong>Thời gian:</strong>
+                            <span class="place-time">0 giờ</span>
+                            <small class="text-muted place-days">(0 ngày)</small>
+                        </li>
+                    </ul>
+                    
+                    <!-- Thuộc tính -->
+                    <div class="place-attributes mt-3">
+                        <h6 class="text-muted small mb-2">Phù hợp với:</h6>
+                        <div class="d-flex flex-wrap gap-1">                            
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chân trang thẻ -->
+                <div class="card-footer bg-transparent border-top-0">
+                    <small class="text-muted">
+                        <i class="bi bi-star text-warning"></i>
+                        Điểm phù hợp: <strong class="place-score-text">0.0</strong>/10
+                    </small>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Liên kết JS -->
+    <script src="js/data.js"></script>
+    <script src="js/knapsack.js"></script>
+    <script src="js/result.js"></script>
+</body>
+</html>
